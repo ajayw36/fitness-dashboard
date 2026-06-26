@@ -120,7 +120,7 @@ export default async function DashboardPage() {
       </div>
 
       <footer className="mt-8 text-center text-[11px] text-faint">
-        Synced from Hevy &amp; Strava · auto-updates every 3h
+        Synced from Hevy &amp; Strava · auto-updates daily
       </footer>
     </main>
   );

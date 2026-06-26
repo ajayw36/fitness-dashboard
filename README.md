@@ -45,7 +45,8 @@ npm run dev               # http://localhost:3000
 Open the app, go to **Settings → Connect Strava**, then click **Sync now**.
 
 ## Auto-sync
-`vercel.json` schedules `GET /api/sync` every 3 hours. The route requires
+`vercel.json` schedules `GET /api/sync` once daily (06:00 UTC — within the Vercel
+Hobby cron limit; bump to a more frequent cron on Pro). The route requires
 `Authorization: Bearer $CRON_SECRET`; Vercel Cron sends this automatically when
 `CRON_SECRET` is set as an environment variable. The dashboard's **Sync now**
 button triggers the same sync via a server action.
