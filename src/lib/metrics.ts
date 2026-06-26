@@ -152,11 +152,9 @@ export async function getDashboardData(now: Date = new Date()): Promise<Dashboar
   const firstW = bwSeries.length ? bwSeries[0].weight : null;
   const changeSinceFirst = currentW != null && firstW != null ? round(currentW - firstW) : null;
 
-  // ----- bench card -----
-  const benchByDay = topSetPerSession(benchSets);
-  const benchVals = benchByDay.map((s) => s.topKg);
-  const benchValue = benchVals.length ? round(kgToDisplay(benchVals[benchVals.length - 1], unit)) : null;
-  const benchPrev = benchVals.length > 1 ? round(kgToDisplay(benchVals[benchVals.length - 2], unit)) : null;
+  // ----- bench card (value = all-time heaviest set, goal = configured goal) -----
+  const benchMaxKg = benchSets.reduce((m, s) => Math.max(m, s.weightKg ?? 0), 0);
+  const benchValue = benchSets.length ? round(kgToDisplay(benchMaxKg, unit)) : null;
   const benchGoal = settings.benchGoalKg != null ? round(kgToDisplay(settings.benchGoalKg, unit)) : null;
 
   // ----- 5K card -----
@@ -207,7 +205,7 @@ export async function getDashboardData(now: Date = new Date()): Promise<Dashboar
         goal: benchGoal,
         unit: weightUnitLabel(unit),
         pct: benchValue != null && benchGoal ? Math.min(100, Math.round((benchValue / benchGoal) * 100)) : null,
-        delta: benchValue != null && benchPrev != null ? round(benchValue - benchPrev) : null,
+        delta: null,
       },
       bodyweight: {
         value: currentW,

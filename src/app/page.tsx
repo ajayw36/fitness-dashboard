@@ -70,8 +70,6 @@ export default async function DashboardPage() {
           suffix={data.cards.bench.unit}
           secondary={data.cards.bench.goal ? `${data.cards.bench.goal}` : null}
           pct={data.cards.bench.pct}
-          delta={data.cards.bench.delta}
-          deltaUnit={data.cards.bench.unit}
         />
         <StatCard
           label="Body Weight"
