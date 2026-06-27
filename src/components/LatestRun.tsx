@@ -12,12 +12,13 @@ export function LatestRun({ run }: { run: NonNullable<DashboardData["latestRun"]
 
       <h3 className="mt-2 text-lg font-semibold text-text">{run.name}</h3>
 
-      {/* route map */}
-      <div className="mt-3 flex-1 min-h-44 w-full rounded-lg border border-border bg-bg-elevated p-2">
+      {/* route map — explicit height so it renders on mobile (percentage
+          heights of flex children collapse to 0 in mobile Safari) */}
+      <div className="mt-3 h-56 w-full rounded-lg border border-border bg-bg-elevated p-2 lg:h-auto lg:flex-1">
         {run.polyline ? (
-          <RunMap polyline={run.polyline} className="h-full w-full" />
+          <RunMap polyline={run.polyline} className="block h-56 w-full lg:h-full" />
         ) : (
-          <div className="flex h-full items-center justify-center text-xs text-faint">
+          <div className="flex h-56 items-center justify-center text-xs text-faint lg:h-full">
             No GPS route for this run
           </div>
         )}
