@@ -12,13 +12,15 @@ export function LatestRun({ run }: { run: NonNullable<DashboardData["latestRun"]
 
       <h3 className="mt-2 text-lg font-semibold text-text">{run.name}</h3>
 
-      {/* route map — explicit height so it renders on mobile (percentage
-          heights of flex children collapse to 0 in mobile Safari) */}
-      <div className="mt-3 h-56 w-full rounded-lg border border-border bg-bg-elevated p-2 lg:h-auto lg:flex-1">
+      {/* route map — the SVG is absolutely positioned to fill this box.
+          iOS Safari ignores CSS height on a viewBox-only <svg> and sizes it
+          from the polyline's aspect ratio instead (collapsing to ~0 on a
+          wide route), so we give it a definite containing block to fill. */}
+      <div className="relative mt-3 h-56 w-full overflow-hidden rounded-lg border border-border bg-bg-elevated lg:h-auto lg:flex-1">
         {run.polyline ? (
-          <RunMap polyline={run.polyline} className="block h-56 w-full lg:h-full" />
+          <RunMap polyline={run.polyline} className="absolute inset-0 h-full w-full" />
         ) : (
-          <div className="flex h-56 items-center justify-center text-xs text-faint lg:h-full">
+          <div className="flex h-full items-center justify-center text-xs text-faint">
             No GPS route for this run
           </div>
         )}
