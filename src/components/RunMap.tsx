@@ -14,21 +14,30 @@ export function RunMap({ polyline, className = "" }: { polyline: string; classNa
   // Equirectangular projection (good enough for a single run's extent).
   const latMean = coords.reduce((s, c) => s + c[0], 0) / coords.length;
   const k = Math.cos((latMean * Math.PI) / 180);
-  const pts = coords.map(([lat, lng]) => [lng * k, -lat] as [number, number]);
+  const projected = coords.map(([lat, lng]) => [lng * k, -lat] as [number, number]);
 
-  const xs = pts.map((p) => p[0]);
-  const ys = pts.map((p) => p[1]);
+  const xs = projected.map((p) => p[0]);
+  const ys = projected.map((p) => p[1]);
   const minX = Math.min(...xs);
-  const maxX = Math.max(...xs);
   const minY = Math.min(...ys);
-  const maxY = Math.max(...ys);
-  const w = Math.max(maxX - minX, 1e-6);
-  const h = Math.max(maxY - minY, 1e-6);
-  const pad = Math.max(w, h) * 0.06;
-  const viewBox = `${minX - pad} ${minY - pad} ${w + 2 * pad} ${h + 2 * pad}`;
+  const w = Math.max(Math.max(...xs) - minX, 1e-9);
+  const h = Math.max(Math.max(...ys) - minY, 1e-9);
 
-  const pointsStr = pts.map((p) => `${p[0]},${p[1]}`).join(" ");
-  const dotR = Math.max(w, h) * 0.03;
+  // Normalize into a fixed 0..SCALE coordinate space. Raw lat/lng give huge
+  // offsets with a sub-0.01 extent, which overflows the precision of WebKit's
+  // SVG rasterizer — the route then collapses to nothing on iOS Safari while
+  // rendering fine in Chrome. Remapping to a sane magnitude fixes both.
+  const SCALE = 1000;
+  const span = Math.max(w, h);
+  const pts = projected.map(
+    ([x, y]) => [((x - minX) / span) * SCALE, ((y - minY) / span) * SCALE] as [number, number],
+  );
+
+  const pad = SCALE * 0.06;
+  const viewBox = `${-pad} ${-pad} ${(w / span) * SCALE + 2 * pad} ${(h / span) * SCALE + 2 * pad}`;
+
+  const pointsStr = pts.map((p) => `${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(" ");
+  const dotR = SCALE * 0.03;
   const start = pts[0];
   const end = pts[pts.length - 1];
 
