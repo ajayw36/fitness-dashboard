@@ -211,7 +211,11 @@ export async function getDashboardData(now: Date = new Date()): Promise<Dashboar
         value: currentW,
         goal: goalW,
         unit: weightUnitLabel(unit),
-        pct: currentW != null && goalW ? Math.min(100, Math.round((goalW / currentW) * 100)) : null,
+        // progress from starting weight toward goal (works for cut or bulk)
+        pct:
+          currentW != null && goalW != null && firstW != null && goalW !== firstW
+            ? Math.max(0, Math.min(100, Math.round(((currentW - firstW) / (goalW - firstW)) * 100)))
+            : null,
       },
       fiveK: {
         seconds: best5k?.seconds ?? null,
