@@ -35,9 +35,6 @@ export function WorkoutCalendar({ calendar }: { calendar: DashboardData["calenda
             >
               <div className="flex items-start justify-between">
                 <span className="tnum text-[11px] leading-none">{cell.day}</span>
-                {cell.runLabel && (
-                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-lime" title="Run" />
-                )}
               </div>
               <div className="flex flex-col gap-0.5 leading-tight">
                 {cell.liftLabel && (
